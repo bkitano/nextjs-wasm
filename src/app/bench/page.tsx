@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Typography } from "@material-ui/core";
+import { Button, Grid, Typography } from "@material-ui/core";
 import { generateMatrix } from "./lib/generateMatrix";
 import { multiplyMatrices } from "./lib/multiplyMatrices";
 import { useEffect, useState } from "react";
@@ -48,12 +48,18 @@ const Bench = () => {
     <>
       <Typography variant="h1">Bench</Typography>
       <Typography variant="h4">1000 x 1000 matrix multiplication</Typography>
-      {/* <MatrixMultiplicationBenchmark
-        {...{
-          matrixSize: 1000,
-        }}
-      /> */}
-      <WasmBench />
+      <Grid container>
+        <Grid item xs={6}>
+          <MatrixMultiplicationBenchmark
+            {...{
+              matrixSize: 1000,
+            }}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <WasmBench />
+        </Grid>
+      </Grid>
     </>
   );
 };

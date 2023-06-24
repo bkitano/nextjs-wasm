@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useWasm } from "../hooks/useWasm";
-import { Button } from "@material-ui/core";
+import { Button, Typography } from "@material-ui/core";
 
 const WasmBench = () => {
   const { wasm, loading } = useWasm("/wasm/multiplyMatrices.wasm");
+  const [message, setMessage] = useState("Waiting for you");
 
   const runBenchmarkAsync = async (n: number): Promise<number> => {
     return new Promise((resolve, reject) => {
@@ -23,12 +24,14 @@ const WasmBench = () => {
         <Button
           variant="contained"
           onClick={async () => {
+            setMessage("Running...");
             const runtime = await runBenchmarkAsync(1000);
-            console.log({ runtime });
+            setMessage("Time taken: " + runtime + "seconds");
           }}
         >
-          Run benchmark
+          Run
         </Button>
+        <Typography variant="h3">{message}</Typography>
       </>
     );
   }
