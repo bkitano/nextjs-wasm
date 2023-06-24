@@ -1,29 +1,44 @@
 "use client";
 
-import { Typography } from "@material-ui/core";
+import { Button, Typography } from "@material-ui/core";
 import { generateMatrix } from "./lib/generateMatrix";
 import { multiplyMatrices } from "./lib/multiplyMatrices";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
+import { WasmBench } from "./components/WasmBench";
+
+const benchmark = (matrixSize: number): Promise<number> => {
+  return new Promise((resolve, reject) => {
+    const a = generateMatrix(matrixSize);
+    const b = generateMatrix(matrixSize);
+
+    const startTime = performance.now();
+    const resultMatrix = multiplyMatrices(a, b);
+    const endTime = performance.now();
+
+    const timeTaken = endTime - startTime;
+    resolve(timeTaken);
+  });
+};
 
 const MatrixMultiplicationBenchmark = (props: { matrixSize: number }) => {
+  const [message, setMessage] = useState("Waiting for you");
   const { matrixSize } = props;
-  const a = generateMatrix(matrixSize);
-  const b = generateMatrix(matrixSize);
-
-  const startTime = performance.now();
-  const resultMatrix = multiplyMatrices(a, b);
-  const endTime = performance.now();
-
-  const timeTaken = endTime - startTime;
-
-  useEffect(() => {
-    console.log(`Time taken: ${timeTaken} ms`);
-  }, []);
 
   return (
     <>
       <Typography variant="h2">Raw JS</Typography>
-      <Typography variant="h3">{`Time taken: ${timeTaken} ms`}</Typography>
+      <Button
+        onClick={async () => {
+          setMessage("Running...");
+          const timeTaken = await benchmark(matrixSize);
+          setMessage("Time taken: " + timeTaken + "ms");
+        }}
+        variant="contained"
+      >
+        Run benchmark
+      </Button>
+      <Typography variant="h3">{message}</Typography>
     </>
   );
 };
@@ -33,11 +48,12 @@ const Bench = () => {
     <>
       <Typography variant="h1">Bench</Typography>
       <Typography variant="h4">1000 x 1000 matrix multiplication</Typography>
-      <MatrixMultiplicationBenchmark
+      {/* <MatrixMultiplicationBenchmark
         {...{
           matrixSize: 1000,
         }}
-      />
+      /> */}
+      <WasmBench />
     </>
   );
 };

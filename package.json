@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build:wasm": "emcc wasm/multiplyMatrices.c -o public/wasm/multiplyMatrices.js -s EXPORTED_FUNCTIONS=_benchmark -s MODULARIZE -s INITIAL_MEMORY=2048MB -s TOTAL_STACK=1024MB"
   },
   "dependencies": {
     "@material-ui/core": "^4.12.4",
@@ -15,6 +16,7 @@
     "@types/react-dom": "18.2.6",
     "eslint": "8.43.0",
     "eslint-config-next": "13.4.7",
+    "fs": "^0.0.1-security",
     "next": "13.4.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
