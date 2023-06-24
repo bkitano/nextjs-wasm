@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build:wasm": "emcc wasm/multiplyMatrices.c -o public/wasm/multiplyMatrices.js -s EXPORTED_FUNCTIONS=_benchmark -s MODULARIZE -s INITIAL_MEMORY=2048MB -s TOTAL_STACK=1024MB"
+    "build:wasm": "emcc wasm/multiplyMatrices.c -o public/wasm/multiplyMatrices.js -s EXPORTED_FUNCTIONS=_benchmark -s INITIAL_MEMORY=2048MB -s TOTAL_STACK=1024MB"
   },
   "dependencies": {
     "@material-ui/core": "^4.12.4",
