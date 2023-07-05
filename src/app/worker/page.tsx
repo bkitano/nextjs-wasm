@@ -9,7 +9,7 @@ const Page = () => {
   const workerRef = useRef<Worker>();
   useEffect(() => {
     if ("serviceWorker" in navigator) {
-      workerRef.current = new Worker(new URL("./task.ts", import.meta.url));
+      workerRef.current = new Worker(new URL("./wasmTask.ts", import.meta.url));
       workerRef.current.onmessage = (e) => {
         console.log("message from worker", e.data);
       };
@@ -17,7 +17,7 @@ const Page = () => {
   }, []);
 
   const handleWork = useCallback(async () => {
-    workerRef.current?.postMessage({ type: "ping" });
+    workerRef.current?.postMessage({ n: 1000 });
   }, []);
 
   return (
