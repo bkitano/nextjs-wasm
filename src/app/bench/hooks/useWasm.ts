@@ -2,10 +2,17 @@ import { useEffect, useState } from "react";
 
 function useWasm(filePath: string) {
   const [loading, setLoading] = useState(true);
-  const [wasm, setWasm] = useState<any | null>(null);
+  const [wasm, setWasm] =
+    useState<WebAssembly.WebAssemblyInstantiatedSource | null>(null);
 
   useEffect(() => {
     const fetchWasm = async () => {
+      const importObject = {
+        env: {
+          emscripten_date_now: () => Date.now(),
+        },
+      };
+
       const obj: WebAssembly.WebAssemblyInstantiatedSource =
         await WebAssembly.instantiateStreaming(
           fetch(filePath, {
@@ -13,13 +20,9 @@ function useWasm(filePath: string) {
               "Content-Type": "application/wasm",
             },
           }),
-          {
-            env: {
-              emscripten_date_now: () => Date.now(),
-            },
-          }
+          importObject
         );
-      return obj.instance;
+      return obj;
     };
     const webInstance = fetchWasm();
     webInstance.then((instance) => {

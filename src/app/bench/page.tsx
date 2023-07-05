@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Grid, Typography } from "@material-ui/core";
+import { Button, Grid, TextField, Typography } from "@material-ui/core";
 import { generateMatrix } from "./lib/generateMatrix";
 import { multiplyMatrices } from "./lib/multiplyMatrices";
 import { useEffect, useState } from "react";
@@ -44,20 +44,31 @@ const MatrixMultiplicationBenchmark = (props: { matrixSize: number }) => {
 };
 
 const Bench = () => {
+  const [n, setN] = useState(1000);
   return (
     <>
       <Typography variant="h1">Bench</Typography>
-      <Typography variant="h4">1000 x 1000 matrix multiplication</Typography>
+      <TextField
+        label="Matrix size"
+        value={n}
+        style={{
+          backgroundColor: "white",
+        }}
+        variant="standard"
+        onChange={(e) => {
+          setN(parseInt(e.target.value));
+        }}
+      />
       <Grid container>
         <Grid item xs={6}>
           <MatrixMultiplicationBenchmark
             {...{
-              matrixSize: 1000,
+              matrixSize: 32000,
             }}
           />
         </Grid>
         <Grid item xs={6}>
-          <WasmBench />
+          <WasmBench n={32000} />
         </Grid>
       </Grid>
     </>

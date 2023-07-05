@@ -4,16 +4,26 @@ import { useEffect, useState } from "react";
 import { useWasm } from "../hooks/useWasm";
 import { Button, Typography } from "@material-ui/core";
 
-const WasmBench = () => {
+const WasmBench = (props: { n: number }) => {
+  const { n } = props;
   const { wasm, loading } = useWasm("/wasm/multiplyMatrices.wasm");
   const [message, setMessage] = useState("Waiting for you");
 
   const runBenchmarkAsync = async (n: number): Promise<number> => {
     return new Promise((resolve, reject) => {
-      const time = wasm.exports.benchmark(n);
-      resolve(time);
+      if (wasm) {
+        const { instance, module } = wasm;
+        const time = instance.exports.benchmark(n);
+        resolve(time);
+      }
     });
   };
+
+  if (wasm) {
+    const { instance, module } = wasm;
+    console.log(WebAssembly.Module.exports(module));
+    console.log(WebAssembly.Module.imports(module));
+  }
 
   if (loading) {
     return <p>Loading...</p>;
@@ -25,7 +35,7 @@ const WasmBench = () => {
           variant="contained"
           onClick={async () => {
             setMessage("Running...");
-            const runtime = await runBenchmarkAsync(1000);
+            const runtime = await runBenchmarkAsync(n);
             setMessage("Time taken: " + runtime + "seconds");
           }}
         >
