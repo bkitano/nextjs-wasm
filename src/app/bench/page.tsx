@@ -75,4 +75,6 @@ const Bench = () => {
   );
 };
 
+export { benchmark };
+
 export default Bench;
