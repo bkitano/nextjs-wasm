@@ -5,31 +5,31 @@ import { Button } from "@material-ui/core";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-const Page = () => {
+const WasmPi = (props: { n: number }) => {
+  const { n } = props;
+  const [message, setMessage] = useState("Waiting for you");
   const workerRef = useRef<Worker>();
-  const nonWasmRef = useRef<Worker>();
+
   useEffect(() => {
     if ("serviceWorker" in navigator) {
-      workerRef.current = new Worker(new URL("./wasmTask.ts", import.meta.url));
-      workerRef.current.onmessage = (e) => {
-        console.log("message from worker", e.data);
-      };
-
-      nonWasmRef.current = new Worker(
-        new URL("./benchTask.ts", import.meta.url)
+      workerRef.current = new Worker(
+        new URL("./wasmWorker.ts", import.meta.url)
       );
-      nonWasmRef.current.onmessage = (e) => {
-        console.log("message from worker", e.data);
+      workerRef.current.onmessage = (e) => {
+        console.log("message from wasm worker", e.data);
       };
     }
   }, []);
 
-  const handleNonWasmWork = useCallback(async () => {
-    nonWasmRef.current?.postMessage({ n: 1000 });
-  }, []);
+  useEffect(
+    () => () => {
+      workerRef.current?.terminate();
+    },
+    []
+  );
 
   const handleWork = useCallback(async () => {
-    workerRef.current?.postMessage({ n: 1000 });
+    workerRef.current?.postMessage({ n });
   }, []);
 
   return (
@@ -43,6 +43,28 @@ const Page = () => {
       >
         Ping Wasm Worker
       </Button>
+    </>
+  );
+};
+
+const Pi = (props: { n: number }) => {
+  const { n } = props;
+  const nonWasmRef = useRef<Worker>();
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      nonWasmRef.current = new Worker(new URL("./worker.ts", import.meta.url));
+      nonWasmRef.current.onmessage = (e) => {
+        console.log("message from worker", e.data);
+      };
+    }
+  }, []);
+
+  const handleNonWasmWork = useCallback(async () => {
+    nonWasmRef.current?.postMessage({ n });
+  }, []);
+
+  return (
+    <>
       <Button
         variant="contained"
         onClick={(e) => {
@@ -52,6 +74,17 @@ const Page = () => {
       >
         Ping non-wasm Worker
       </Button>
+    </>
+  );
+};
+
+const Page = () => {
+  const n = 1_000_000_0;
+
+  return (
+    <>
+      <WasmPi n={n} />
+      <Pi n={n} />
     </>
   );
 };

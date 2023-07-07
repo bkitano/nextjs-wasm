@@ -6,7 +6,7 @@ import { Button, Typography } from "@material-ui/core";
 
 const WasmBench = (props: { n: number }) => {
   const { n } = props;
-  const { wasm, loading } = useWasm("/wasm/multiplyMatrices.wasm");
+  const { wasm, loading } = useWasm("/wasm/calculatePi.wasm");
   const [message, setMessage] = useState("Waiting for you");
 
   const runBenchmarkAsync = async (n: number): Promise<number> => {
@@ -18,12 +18,6 @@ const WasmBench = (props: { n: number }) => {
       }
     });
   };
-
-  if (wasm) {
-    const { instance, module } = wasm;
-    console.log(WebAssembly.Module.exports(module));
-    console.log(WebAssembly.Module.imports(module));
-  }
 
   if (loading) {
     return <p>Loading...</p>;
